@@ -2,6 +2,7 @@ import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import noProduct from "../assets/images/no_product.svg";
 import { Product } from "../interfaces/product.interface";
+import RatingComponent from "./Rating.component";
 
 interface Props {
   product: Product;
@@ -15,10 +16,16 @@ const ProductComponent = ({ product }: Props) => {
       </Link>
       <Card.Body>
         <Link to={`/products/${product._id}`}>
-          <Card.Title as="div">
+          <Card.Title as="div" className="product-title">
             <strong>{product.name}</strong>
           </Card.Title>
         </Link>
+        <Card.Text as="div">
+          <RatingComponent
+            value={product.rating}
+            text={`${product.numReviews} reviews`}
+          />
+        </Card.Text>
         <Card.Text as="h3">${product.price}</Card.Text>
       </Card.Body>
     </Card>
