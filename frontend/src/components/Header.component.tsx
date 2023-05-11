@@ -1,8 +1,8 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
-import logo from "../assets/logo.png";
+import logo from "../assets/images/logo.png";
 
-const Header = () => {
+const HeaderComponent = () => {
   return (
     <header>
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
@@ -28,4 +28,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HeaderComponent;
