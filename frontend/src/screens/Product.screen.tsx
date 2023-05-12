@@ -1,13 +1,25 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Col, Row, Image, ListGroup, Card, Button } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
-import products from "../products";
+import axios from "axios";
 import noProduct from "../assets/images/no_product.svg";
 import RatingComponent from "../components/Rating.component";
+import { Product } from "../interfaces/product.interface";
 
 const ProductScreen = () => {
+  const [product, setProduct] = useState<Product>();
+
   const { id: productId } = useParams();
-  const product = products.find((p) => p._id === productId);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get<Product>(`/api/products/${productId}`);
+      setProduct(data);
+    };
+
+    fetchProduct();
+  }, [productId]);
 
   if (!product) {
     return <div>No product with given ID</div>;
