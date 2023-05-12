@@ -7,6 +7,7 @@ export interface UserInput {
 }
 
 export interface UserDocument extends UserInput, Document {
+  isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

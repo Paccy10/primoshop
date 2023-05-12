@@ -29,6 +29,7 @@ export interface ProductInput {
   user: string;
   name: string;
   image: string;
+  brand: String;
   category: string;
   description: string;
   price: number;
