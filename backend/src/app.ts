@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import { connectDB } from "./config/db";
 import productRoutes from "./routes/product.routes";
+import Logger from "./library/logger";
+import { errorHandler, notFound } from "./middlewares/errorHandler";
 
 connectDB();
 
@@ -15,4 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/products", productRoutes);
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.use(notFound);
+app.use(errorHandler);
+
+app.listen(port, () => Logger.info(`Server running on port ${port}`));
