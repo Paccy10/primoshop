@@ -9,4 +9,6 @@ export interface Product {
   countInStock: number;
   rating: number;
   numReviews: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
