@@ -9,7 +9,7 @@
     "build": "tsc p .",
     "prestart": "yarn run build",
     "start": "node dist/app.js",
-    "dev": "nodemon src/app.ts",
+    "start:dev": "nodemon src/app.ts",
     "data:import": "ts-node scripts/seeder.ts",
     "data:destroy": "ts-node scripts/seeder.ts -d"
   },
