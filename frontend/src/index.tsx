@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import {
   createBrowserRouter,
@@ -6,12 +5,14 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import { Provider } from "react-redux";
 
 import "./assets/styles/bootstrap.custom.css";
 import "./assets/styles/index.css";
 import App from "./App";
 import HomeScreen from "./screens/Home.screen";
 import ProductScreen from "./screens/Product.screen";
+import store from "./store";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,4 +26,8 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-root.render(<RouterProvider router={router} />);
+root.render(
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
+);
