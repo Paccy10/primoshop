@@ -1,8 +1,8 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
-import products from "./data/products";
 import { connectDB } from "./config/db";
+import productRoutes from "./routes/product.routes";
 
 connectDB();
 
@@ -13,13 +13,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("API is running...");
 });
 
-app.get("/api/products", (req: Request, res: Response) => {
-  res.json(products);
-});
-
-app.get("/api/products/:id", (req: Request, res: Response) => {
-  const product = products.find((p) => p._id === req.params.id);
-  res.json(product);
-});
+app.use("/api/products", productRoutes);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
