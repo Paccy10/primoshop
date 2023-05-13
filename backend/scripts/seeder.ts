@@ -5,6 +5,7 @@ import User from "../src/models/user.model";
 import Product from "../src/models/product.model";
 import Order from "../src/models/order.model";
 import { connectDB } from "../src/config/db";
+import Logger from "../src/library/logger";
 
 dotenv.config();
 
@@ -26,10 +27,10 @@ const importData = async () => {
     }));
     await Product.insertMany(sampleProducts);
 
-    console.log("Data Imported!!!");
+    Logger.info("Data Imported!!!");
     process.exit();
   } catch (error: any) {
-    console.log(error.message);
+    Logger.error(error.message);
     process.exit(1);
   }
 };
@@ -42,10 +43,10 @@ const destroyData = async () => {
     await Product.deleteMany();
     await User.deleteMany();
 
-    console.log("Data Destroyed!!!");
+    Logger.info("Data Destroyed!!!");
     process.exit();
   } catch (error: any) {
-    console.log(error.message);
+    Logger.error(error.message);
     process.exit(1);
   }
 };
