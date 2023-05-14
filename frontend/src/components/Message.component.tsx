@@ -12,7 +12,7 @@ type Variant =
   | "dark";
 
 interface Props {
-  variant: Variant;
+  variant?: Variant;
 }
 
 const MessageComponent = ({
