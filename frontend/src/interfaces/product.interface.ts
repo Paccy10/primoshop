@@ -12,3 +12,7 @@ export interface Product {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface CartProduct extends Product {
+  quantity: number;
+}

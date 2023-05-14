@@ -27,3 +27,7 @@ export const getError = (
   }
   return undefined;
 };
+
+export const addDecimals = (num: number): string => {
+  return (Math.round(num * 100) / 100).toFixed(2);
+};
