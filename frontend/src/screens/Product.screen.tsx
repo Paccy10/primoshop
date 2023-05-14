@@ -10,7 +10,6 @@ import {
   Form,
 } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
-import { useDispatch } from "react-redux";
 import noProduct from "../assets/images/no_product.svg";
 import RatingComponent from "../components/Rating.component";
 import { useGetSingleProductQuery } from "../store/slices/productsApiSlice";
@@ -18,6 +17,7 @@ import { getError } from "../helpers/utils";
 import LoaderComponent from "../components/Loader.component";
 import MessageComponent from "../components/Message.component";
 import { addToCart } from "../store/slices/cartSlice";
+import { useAppDispatch } from "../store/hooks";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -28,7 +28,7 @@ const ProductScreen = () => {
     error,
   } = useGetSingleProductQuery(`${productId}`);
   const [quantity, setQuantity] = useState(1);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const addToCartHandler = () => {

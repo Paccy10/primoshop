@@ -1,9 +1,12 @@
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, Badge } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
 import logo from "../assets/images/logo.png";
+import { useAppSelector } from "../store/hooks";
 
 const HeaderComponent = () => {
+  const { cartItems } = useAppSelector((state) => state.cart);
+
   return (
     <header>
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
@@ -19,12 +22,26 @@ const HeaderComponent = () => {
             <Nav className="ms-auto">
               <LinkContainer to="/cart">
                 <Nav.Link>
-                  <FaShoppingCart /> Cart
+                  <div className="d-inline-flex align-items-center">
+                    <FaShoppingCart />
+                    <span className="mx-1">Cart</span>
+                    {cartItems.length > 0 && (
+                      <Badge pill bg="success">
+                        {cartItems.reduce(
+                          (quantity, item) => quantity + item.quantity,
+                          0
+                        )}
+                      </Badge>
+                    )}
+                  </div>
                 </Nav.Link>
               </LinkContainer>
               <LinkContainer to="/login">
                 <Nav.Link>
-                  <FaUser /> Login
+                  <div className="d-inline-flex align-items-center">
+                    <FaUser />
+                    <span className="mx-1">Login</span>
+                  </div>
                 </Nav.Link>
               </LinkContainer>
             </Nav>
