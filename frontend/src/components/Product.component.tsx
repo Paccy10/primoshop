@@ -1,6 +1,5 @@
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import noProduct from "../assets/images/no_product.svg";
 import { Product } from "../interfaces/product.interface";
 import RatingComponent from "./Rating.component";
 
@@ -12,7 +11,7 @@ const ProductComponent = ({ product }: Props) => {
   return (
     <Card className="my-3 p-3 rounded">
       <Link to={`/products/${product._id}`}>
-        <Card.Img src={noProduct} variant="top" />
+        <Card.Img src={product.image} variant="top" />
       </Link>
       <Card.Body>
         <Link to={`/products/${product._id}`}>
