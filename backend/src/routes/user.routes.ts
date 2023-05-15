@@ -11,17 +11,18 @@ import {
   deleteUser,
 } from "../controllers/user.controller";
 import asyncHandler from "../middlewares/asyncHandler";
+import { protect, admin } from "../middlewares/auth";
 
 const router = express.Router();
 
-router.get("/", asyncHandler(getUsers));
+router.get("/", protect, admin, asyncHandler(getUsers));
 router.post("/", asyncHandler(registerUser));
-router.post("/logout", asyncHandler(logoutUser));
+router.post("/logout", protect, asyncHandler(logoutUser));
 router.post("/login", asyncHandler(loginUser));
-router.get("/profile", asyncHandler(getUserProfile));
-router.put("/profile", asyncHandler(updateUserProfile));
-router.get("/:id", asyncHandler(getUserById));
-router.put("/:id", asyncHandler(updateUser));
-router.delete("/:id", asyncHandler(deleteUser));
+router.get("/profile", protect, asyncHandler(getUserProfile));
+router.put("/profile", protect, asyncHandler(updateUserProfile));
+router.get("/:id", protect, admin, asyncHandler(getUserById));
+router.put("/:id", protect, admin, asyncHandler(updateUser));
+router.delete("/:id", protect, admin, asyncHandler(deleteUser));
 
 export default router;
