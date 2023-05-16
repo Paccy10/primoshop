@@ -1,28 +1,18 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import { omit } from "lodash";
 import User from "../models/user.model";
-import { LoginInput } from "../interfaces/user.interface";
+import { LoginInput, UserInput } from "../interfaces/user.interface";
+import generateToken from "../utils/generateToken";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body as LoginInput;
   const user = await User.findOne({ email });
 
   if (user && (await user.comparePassword(password))) {
-    const token = jwt.sign({ userId: user._id }, `${process.env.SECRET_KEY}`, {
-      expiresIn: "30d",
-    });
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    });
-    return res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-    });
+    generateToken(res, user._id);
+    const data = omit(user.toJSON(), "password");
+
+    return res.json(data);
   }
 
   res.status(401);
@@ -30,7 +20,19 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 export const registerUser = async (req: Request, res: Response) => {
-  res.send("register user");
+  const { name, email, password } = req.body as UserInput;
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(409);
+    throw new Error("User already exists");
+  }
+
+  const user = await User.create({ name, email, password });
+  generateToken(res, user._id);
+  const data = omit(user.toJSON(), "password");
+
+  res.status(201).json(data);
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
