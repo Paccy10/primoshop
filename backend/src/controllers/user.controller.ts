@@ -34,7 +34,12 @@ export const registerUser = async (req: Request, res: Response) => {
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
-  res.send("logout user");
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.json({ message: "Logged out successfully" });
 };
 
 export const getUserProfile = async (req: Request, res: Response) => {
