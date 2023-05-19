@@ -13,7 +13,11 @@ import {
 import asyncHandler from "../middlewares/asyncHandler";
 import { protect, admin } from "../middlewares/auth";
 import validateRequest from "../middlewares/validateRequest";
-import { loginUserSchema, registerUserSchema } from "../schemas/user.schema";
+import {
+  loginUserSchema,
+  registerUserSchema,
+  updateUserSchema,
+} from "../schemas/user.schema";
 
 const router = express.Router();
 
@@ -30,7 +34,12 @@ router.post(
   asyncHandler(loginUser)
 );
 router.get("/profile", protect, asyncHandler(getUserProfile));
-router.put("/profile", protect, asyncHandler(updateUserProfile));
+router.put(
+  "/profile",
+  protect,
+  validateRequest(updateUserSchema),
+  asyncHandler(updateUserProfile)
+);
 router.get("/:id", protect, admin, asyncHandler(getUserById));
 router.put("/:id", protect, admin, asyncHandler(updateUser));
 router.delete("/:id", protect, admin, asyncHandler(deleteUser));
