@@ -3,6 +3,8 @@ import { omit } from "lodash";
 import User from "../models/user.model";
 import { LoginInput, UserInput } from "../interfaces/user.interface";
 import generateToken from "../utils/generateToken";
+import { CustomRequest } from "../interfaces/request.interface";
+import { getUserData } from "../utils/getUserData";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body as LoginInput;
@@ -12,7 +14,7 @@ export const loginUser = async (req: Request, res: Response) => {
     generateToken(res, user._id);
     const data = omit(user.toJSON(), "password");
 
-    return res.json(data);
+    return res.status(200).json(data);
   }
 
   res.status(401);
@@ -30,9 +32,8 @@ export const registerUser = async (req: Request, res: Response) => {
 
   const user = await User.create({ name, email, password });
   generateToken(res, user._id);
-  const data = omit(user.toJSON(), "password");
 
-  res.status(201).json(data);
+  res.status(201).json(getUserData(user));
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
@@ -41,15 +42,38 @@ export const logoutUser = async (req: Request, res: Response) => {
     expires: new Date(0),
   });
 
-  res.json({ message: "Logged out successfully" });
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
-export const getUserProfile = async (req: Request, res: Response) => {
-  res.send("get user profile");
+export const getUserProfile = async (req: CustomRequest, res: Response) => {
+  const user = await User.findById(req.user?._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  return res.status(200).json(getUserData(user));
 };
 
-export const updateUserProfile = async (req: Request, res: Response) => {
-  res.send("update user profile");
+export const updateUserProfile = async (req: CustomRequest, res: Response) => {
+  const user = await User.findById(req.user?._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  const { name, email, password } = req.body as UserInput;
+  user.name = name || user.name;
+  user.email = email || user.email;
+
+  if (password) {
+    user.password = password;
+  }
+
+  const updatedUser = await user.save();
+  return res.status(200).json(getUserData(updatedUser));
 };
 
 // Admin routes

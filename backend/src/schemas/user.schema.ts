@@ -1,5 +1,10 @@
 import { object, string } from "yup";
 
+const passwordRegex =
+  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/;
+const weakPasswordMessage =
+  "Weak Password - Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character";
+
 export const loginUserSchema = object({
   body: object().shape({
     email: string().required().email().label("Email"),
@@ -14,10 +19,16 @@ export const registerUserSchema = object({
     password: string()
       .required()
       .min(6)
-      .matches(
-        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/,
-        "Weak Password - Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character"
-      )
+      .matches(passwordRegex, weakPasswordMessage)
+      .label("Password"),
+  }),
+});
+
+export const updateUserSchema = object({
+  body: object({
+    password: string()
+      .min(6)
+      .matches(passwordRegex, weakPasswordMessage)
       .label("Password"),
   }),
 });

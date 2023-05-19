@@ -1,12 +1,8 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import asyncHandler from "./asyncHandler";
 import User from "../models/user.model";
-import { UserDocument } from "../interfaces/user.interface";
-
-export interface CustomRequest extends Request {
-  user: UserDocument | null;
-}
+import { CustomRequest } from "../interfaces/request.interface";
 
 export const protect = asyncHandler(
   async (req: CustomRequest, res: Response, next: NextFunction) => {
