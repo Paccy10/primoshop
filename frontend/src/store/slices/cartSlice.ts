@@ -20,7 +20,7 @@ const initialState: CartState = localStorage.getItem("cart")
       totalPrice: 0,
     };
 
-export const cartSlice = createSlice({
+const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
@@ -47,3 +47,4 @@ export const cartSlice = createSlice({
 });
 
 export const { addToCart, removeFromCart } = cartSlice.actions;
+export default cartSlice;
