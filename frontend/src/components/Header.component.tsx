@@ -1,4 +1,4 @@
-import { Navbar, Nav, Container, Badge } from "react-bootstrap";
+import { Navbar, Nav, Container, Badge, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
 import logo from "../assets/images/logo.png";
@@ -6,6 +6,7 @@ import { useAppSelector } from "../store/hooks";
 
 const HeaderComponent = () => {
   const { cartItems } = useAppSelector((state) => state.cart);
+  const { userInfo } = useAppSelector((state) => state.auth);
 
   return (
     <header>
@@ -36,14 +37,23 @@ const HeaderComponent = () => {
                   </div>
                 </Nav.Link>
               </LinkContainer>
-              <LinkContainer to="/login">
-                <Nav.Link>
-                  <div className="d-inline-flex align-items-center">
-                    <FaUser />
-                    <span className="mx-1">Login</span>
-                  </div>
-                </Nav.Link>
-              </LinkContainer>
+              {userInfo ? (
+                <NavDropdown title={userInfo.name} id="username">
+                  <LinkContainer to="/profile">
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Item>Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <LinkContainer to="/login">
+                  <Nav.Link>
+                    <div className="d-inline-flex align-items-center">
+                      <FaUser />
+                      <span className="mx-1">Login</span>
+                    </div>
+                  </Nav.Link>
+                </LinkContainer>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
