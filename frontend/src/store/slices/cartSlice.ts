@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CartProduct } from "../../interfaces/product.interface";
 import { updateCart } from "../../helpers/cartUtils";
+import { ShippingAddress } from "../../interfaces/order.interface";
 
 interface CartState {
   cartItems: CartProduct[];
@@ -8,6 +9,8 @@ interface CartState {
   shippingPrice: number;
   taxPrice: number;
   totalPrice: number;
+  shippingAddress: ShippingAddress;
+  paymentMethod: string;
 }
 
 const initialState: CartState = localStorage.getItem("cart")
@@ -18,6 +21,8 @@ const initialState: CartState = localStorage.getItem("cart")
       shippingPrice: 0,
       taxPrice: 0,
       totalPrice: 0,
+      shippingAddress: {},
+      paymentMethod: "PayPal",
     };
 
 const cartSlice = createSlice({
@@ -43,8 +48,13 @@ const cartSlice = createSlice({
 
       return updateCart(state);
     },
+    saveShippingAddress: (state, action) => {
+      state.shippingAddress = action.payload;
+      return updateCart(state);
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, saveShippingAddress } =
+  cartSlice.actions;
 export default cartSlice;
