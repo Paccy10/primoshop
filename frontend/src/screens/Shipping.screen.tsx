@@ -7,6 +7,7 @@ import { ShippingAddress } from "../interfaces/order.interface";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { saveShippingAddress } from "../store/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
+import CheckoutStepsComponent from "../components/CheckoutSteps.component";
 
 const validationSchema = Yup.object().shape({
   address: Yup.string().required().label("Address"),
@@ -38,6 +39,7 @@ const ShippingScreen = () => {
 
   return (
     <FormContainerComponent>
+      <CheckoutStepsComponent step1 step2 />
       <h1>Shipping Address</h1>
       <FormComponent
         initialValues={initialValues}
@@ -60,12 +62,7 @@ const ShippingScreen = () => {
           placeholder="Enter country"
           label="Country"
         />
-        <Button
-          type="submit"
-          variant="primary"
-          className="mt-2"
-          //   disabled={isLoading}
-        >
+        <Button type="submit" variant="primary" className="mt-2">
           Continue
         </Button>
       </FormComponent>
