@@ -1,5 +1,9 @@
 import { USERS_URL } from "../../constants";
-import { LoginData, UserInfo } from "../../interfaces/user.interface";
+import {
+  LoginData,
+  RegisterData,
+  UserInfo,
+} from "../../interfaces/user.interface";
 import { apiSlice } from "./apiSlice";
 
 const usersApiSlice = apiSlice.injectEndpoints({
@@ -7,6 +11,13 @@ const usersApiSlice = apiSlice.injectEndpoints({
     login: builder.mutation<UserInfo, LoginData>({
       query: (data) => ({
         url: `${USERS_URL}/login`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    register: builder.mutation<UserInfo, RegisterData>({
+      query: (data) => ({
+        url: USERS_URL,
         method: "POST",
         body: data,
       }),
@@ -20,4 +31,5 @@ const usersApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = usersApiSlice;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
+  usersApiSlice;
