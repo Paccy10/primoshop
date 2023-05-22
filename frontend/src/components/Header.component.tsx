@@ -2,11 +2,29 @@ import { Navbar, Nav, Container, Badge, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
 import logo from "../assets/images/logo.png";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "../store/slices/usersApiSlice";
+import { logout } from "../store/slices/authSlice";
+import { toast } from "react-toastify";
 
 const HeaderComponent = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const { cartItems } = useAppSelector((state) => state.cart);
   const { userInfo } = useAppSelector((state) => state.auth);
+  const [logoutApiCall] = useLogoutMutation();
+
+  const onLogout = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate("/login");
+    } catch (error: any) {
+      toast.error(error.data?.message || error.error);
+    }
+  };
 
   return (
     <header>
@@ -42,7 +60,7 @@ const HeaderComponent = () => {
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>
-                  <NavDropdown.Item>Logout</NavDropdown.Item>
+                  <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (
                 <LinkContainer to="/login">
