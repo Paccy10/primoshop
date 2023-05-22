@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { UserInfo } from "../../interfaces/user.interface";
 
 interface AuthState {
-  userInfo: UserInfo;
+  userInfo: UserInfo | null;
 }
 
 const initialState: AuthState = {
@@ -19,8 +19,12 @@ const authSlice = createSlice({
       state.userInfo = action.payload;
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
     },
+    logout: (state) => {
+      state.userInfo = null;
+      localStorage.removeItem("userInfo");
+    },
   },
 });
 
-export const { setCredentials } = authSlice.actions;
+export const { setCredentials, logout } = authSlice.actions;
 export default authSlice;
