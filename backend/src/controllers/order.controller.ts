@@ -28,12 +28,23 @@ export const addOrder = async (req: CustomRequest, res: Response) => {
   res.status(201).json(order);
 };
 
-export const getMyOrders = async (req: Request, res: Response) => {
-  res.send("get my orders");
+export const getMyOrders = async (req: CustomRequest, res: Response) => {
+  const orders = await Order.find({ user: req.user?._id });
+  res.status(200).json(orders);
 };
 
 export const getOrderById = async (req: Request, res: Response) => {
-  res.send("get oder by id");
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
+
+  if (!order) {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+
+  res.status(200).json(order);
 };
 
 export const updateOrderToPaid = async (req: Request, res: Response) => {
