@@ -14,14 +14,14 @@ export const loginUserSchema = object({
 
 export const registerUserSchema = object({
   body: object({
-    name: string().required().label("Name"),
-    email: string().required().email().label("Email"),
     password: string()
       .required()
       .min(6)
       .matches(passwordRegex, weakPasswordMessage)
       .label("Password"),
   }),
+  email: string().required().email().label("Email"),
+  name: string().required().label("Name"),
 });
 
 export const updateUserSchema = object({
