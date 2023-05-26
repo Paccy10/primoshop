@@ -3,7 +3,11 @@ import { object, string, array, number } from "yup";
 export const addOrderSchema = object({
   body: object({
     totalPrice: number().positive().required().label("Total Price"),
-    shippingPrice: number().positive().required().label("Shipping Price"),
+    shippingPrice: number()
+      .positive()
+      .min(0)
+      .required()
+      .label("Shipping Price"),
     taxPrice: number().positive().required().label("Tax Price"),
     itemsPrice: number().positive().required().label("Items Price"),
     paymentMethod: string().required().label("paymentMethod"),
