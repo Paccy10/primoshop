@@ -9,7 +9,6 @@ interface OrderItem {
 }
 
 export interface OrderInput {
-  user: string;
   orderItems: OrderItem[];
   shippingAddress: {
     address: string;
@@ -25,6 +24,7 @@ export interface OrderInput {
 }
 
 export interface OrderDocument extends OrderInput, Document {
+  user: string;
   paymentResult: {
     id: string;
     status: string;
