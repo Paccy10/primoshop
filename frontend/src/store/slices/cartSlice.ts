@@ -1,17 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CartProduct } from "../../interfaces/product.interface";
 import { updateCart } from "../../helpers/cartUtils";
-import { ShippingAddress } from "../../interfaces/order.interface";
-
-interface CartState {
-  cartItems: CartProduct[];
-  itemsPrice: number;
-  shippingPrice: number;
-  taxPrice: number;
-  totalPrice: number;
-  shippingAddress: ShippingAddress;
-  paymentMethod: string;
-}
+import { CartState } from "../../interfaces/order.interface";
 
 const initialState: CartState = localStorage.getItem("cart")
   ? JSON.parse(`${localStorage.getItem("cart")}`)
@@ -56,6 +46,10 @@ const cartSlice = createSlice({
       state.paymentMethod = action.payload;
       return updateCart(state);
     },
+    clearCartItems: (state) => {
+      state.cartItems = [];
+      return updateCart(state);
+    },
   },
 });
 
@@ -64,5 +58,6 @@ export const {
   removeFromCart,
   saveShippingAddress,
   savePaymentMethod,
+  clearCartItems,
 } = cartSlice.actions;
 export default cartSlice;
