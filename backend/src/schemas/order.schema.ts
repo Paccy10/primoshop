@@ -2,12 +2,8 @@ import { object, string, array, number } from "yup";
 
 export const addOrderSchema = object({
   body: object({
-    totalPrice: number().positive().required().label("Total Price"),
-    shippingPrice: number()
-      .positive()
-      .min(0)
-      .required()
-      .label("Shipping Price"),
+    totalPrice: number().positive().required(),
+    shippingPrice: number().positive().min(0).required(),
     taxPrice: number().positive().required().label("Tax Price"),
     itemsPrice: number().positive().required().label("Items Price"),
     paymentMethod: string().required().label("paymentMethod"),
@@ -24,20 +20,24 @@ export const addOrderSchema = object({
     orderItems: array()
       .of(
         object({
-          name: string().required().label("Name"),
-          quantity: number()
-            .integer()
-            .positive()
-            .required()
-            .min(1)
-            .label("Quantity"),
-          image: string().required().label("Image"),
-          price: number().positive().required().label("Price"),
-          product: string().required().label("Product"),
+          name: string().required(),
+          quantity: number().integer().positive().required().min(1),
+          image: string().required(),
+          price: number().positive().required(),
+          product: string().required(),
         })
       )
       .required()
       .min(1)
       .label("Order Items"),
+  }),
+});
+
+export const paymentResultSchema = object({
+  body: object({
+    id: string().required(),
+    status: string().required(),
+    update_time: string().required(),
+    email_address: string().required(),
   }),
 });

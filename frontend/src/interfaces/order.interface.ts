@@ -15,18 +15,20 @@ export interface OrderItem {
   product: string;
 }
 
+export interface PaymentResult {
+  id: string;
+  status: string;
+  update_time: string;
+  email_address: string;
+}
+
 export interface Order {
   _id: string;
   user: string;
   orderItems: OrderItem[];
   shippingAddress: ShippingAddress;
   paymentMethod: string;
-  paymentResult: {
-    id: string;
-    status: string;
-    update_time: string;
-    email_address: string;
-  };
+  paymentResult: PaymentResult;
   itemsPrice: number;
   taxPrice: number;
   shippingPrice: number;
@@ -34,8 +36,16 @@ export interface Order {
   isPaid: boolean;
   isDelivered: boolean;
   deliveredAt: Date;
+  paidAt: Date;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface GetOrder extends Omit<Order, "user"> {
+  user: {
+    name: string;
+    email: string;
+  };
 }
 
 export interface CartState {

@@ -23,16 +23,19 @@ export interface OrderInput {
   totalPrice: number;
 }
 
+export interface PaymentResultInput {
+  id: string;
+  status: string;
+  update_time: string;
+  email_address: string;
+}
+
 export interface OrderDocument extends OrderInput, Document {
   user: string;
-  paymentResult: {
-    id: string;
-    status: string;
-    update_time: string;
-    email_address: string;
-  };
+  paymentResult: PaymentResultInput;
   isPaid: Boolean;
   isDelivered: Boolean;
+  paidAt: Date;
   deliveredAt: Date;
   createdAt: Date;
   updatedAt: Date;
