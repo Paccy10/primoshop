@@ -14,3 +14,9 @@ export interface LoginData {
 export interface RegisterData extends LoginData {
   name: string;
 }
+
+export interface UpdateProfileData {
+  name: string;
+  email: string;
+  password?: string;
+}
