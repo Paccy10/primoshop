@@ -1,6 +1,11 @@
 import { apiSlice } from "./apiSlice";
 import { ORDERS_URL } from "../../constants";
-import { CartState, Order } from "../../interfaces/order.interface";
+import {
+  CartState,
+  GetOrder,
+  Order,
+  PaymentResult,
+} from "../../interfaces/order.interface";
 import _ from "lodash";
 
 export const ordersApiSlice = apiSlice.injectEndpoints({
@@ -21,7 +26,29 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
+
+    getOrderDetails: builder.query<GetOrder, string>({
+      query: (orderId) => ({
+        url: `${ORDERS_URL}/${orderId}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+
+    payOrder: builder.mutation<
+      Order,
+      { orderId: string; paymentResult: PaymentResult }
+    >({
+      query: ({ orderId, paymentResult }) => ({
+        url: `${ORDERS_URL}/${orderId}/pay`,
+        method: "PUT",
+        body: paymentResult,
+      }),
+    }),
   }),
 });
 
-export const { useAddOrderMutation } = ordersApiSlice;
+export const {
+  useAddOrderMutation,
+  useGetOrderDetailsQuery,
+  usePayOrderMutation,
+} = ordersApiSlice;
