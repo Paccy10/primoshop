@@ -41,7 +41,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
     >({
       query: ({ orderId, paymentResult }) => ({
         url: `${ORDERS_URL}/${orderId}/pay`,
-        method: "PUT",
+        method: "PATCH",
         body: paymentResult,
       }),
     }),
@@ -57,6 +57,12 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    deliverOrder: builder.mutation<Order, string>({
+      query: (orderId) => ({
+        url: `${ORDERS_URL}/${orderId}/deliver`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -66,4 +72,5 @@ export const {
   usePayOrderMutation,
   useGetMyOrdersQuery,
   useGetOrdersQuery,
+  useDeliverOrderMutation,
 } = ordersApiSlice;
