@@ -60,6 +60,19 @@ const HeaderComponent = () => {
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>
+                  {userInfo.isAdmin && (
+                    <>
+                      <LinkContainer to="/admin/orders">
+                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/products">
+                        <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/users">
+                        <NavDropdown.Item>Users</NavDropdown.Item>
+                      </LinkContainer>
+                    </>
+                  )}
                   <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (

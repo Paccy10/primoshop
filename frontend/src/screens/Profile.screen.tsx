@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 import { useGetMyOrdersQuery } from "../store/slices/ordersApiSlice";
 import MessageComponent from "../components/Message.component";
 import { getError } from "../helpers/utils";
-import { tr } from "date-fns/locale";
 import { format } from "date-fns";
 import { FaTimes } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
