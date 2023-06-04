@@ -2,6 +2,7 @@ import { apiSlice } from "./apiSlice";
 import { ORDERS_URL } from "../../constants";
 import {
   CartState,
+  GetAdminOrder,
   GetOrder,
   Order,
   PaymentResult,
@@ -50,6 +51,12 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    getOrders: builder.query<GetAdminOrder[], void>({
+      query: () => ({
+        url: ORDERS_URL,
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
@@ -58,4 +65,5 @@ export const {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetMyOrdersQuery,
+  useGetOrdersQuery,
 } = ordersApiSlice;

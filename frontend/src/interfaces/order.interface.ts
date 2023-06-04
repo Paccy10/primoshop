@@ -48,6 +48,13 @@ export interface GetOrder extends Omit<Order, "user"> {
   };
 }
 
+export interface GetAdminOrder extends Omit<Order, "user"> {
+  user: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface CartState {
   cartItems: CartProduct[];
   itemsPrice: number;
