@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { Row, Col, ListGroup, Image, Button, Card } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
 import MessageComponent from "../components/Message.component";
@@ -7,10 +7,12 @@ import LoaderComponent from "../components/Loader.component";
 import {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
+  useDeliverOrderMutation,
 } from "../store/slices/ordersApiSlice";
 import { getError } from "../helpers/utils";
 import { useEffect } from "react";
 import { format } from "date-fns";
+import { useAppSelector } from "../store/hooks";
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
@@ -22,7 +24,9 @@ const OrderScreen = () => {
     error,
   } = useGetOrderDetailsQuery(`${orderId}`);
   const [payOrder, { isLoading: isPaying }] = usePayOrderMutation();
+  const [deliverOrder, { isLoading: isDelivering }] = useDeliverOrderMutation();
   const [{ isPending }, paypalDispacth] = usePayPalScriptReducer();
+  const { userInfo } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const loadPaypalScript = async () => {
@@ -42,7 +46,6 @@ const OrderScreen = () => {
     }
   }, [order, paypalDispacth]);
 
-  const onApproveTest = () => {};
   const onCreateOrder = (data: any, actions: any) => {
     return actions.order
       .create({
@@ -73,6 +76,16 @@ const OrderScreen = () => {
   };
   const onError = (error: any) => {
     toast.error(error.message);
+  };
+
+  const onMarkAsDelivered = async () => {
+    try {
+      await deliverOrder(`${orderId}`);
+      refetch();
+      toast.success("Order delivered successfully");
+    } catch (error: any) {
+      toast.error(getError(error));
+    }
   };
 
   return (
@@ -190,12 +203,6 @@ const OrderScreen = () => {
                           <LoaderComponent />
                         ) : (
                           <div>
-                            <Button
-                              onClick={onApproveTest}
-                              style={{ marginBottom: "10px" }}
-                            >
-                              Test Pay Order
-                            </Button>
                             <div>
                               <PayPalButtons
                                 createOrder={onCreateOrder}
@@ -207,6 +214,19 @@ const OrderScreen = () => {
                         )}
                       </ListGroup.Item>
                     )}
+                    {isDelivering && <LoaderComponent />}
+                    {userInfo &&
+                      userInfo.isAdmin &&
+                      order.isPaid &&
+                      !order.isDelivered && (
+                        <ListGroup.Item>
+                          <div className="d-grid">
+                            <Button type="button" onClick={onMarkAsDelivered}>
+                              Mark As Delivered
+                            </Button>
+                          </div>
+                        </ListGroup.Item>
+                      )}
                   </ListGroup>
                 </Card>
               </Col>

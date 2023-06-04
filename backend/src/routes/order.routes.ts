@@ -23,13 +23,13 @@ router.post(
 );
 router.get("/mine", protect, asyncHandler(getMyOrders));
 router.get("/:id", protect, asyncHandler(getOrderById));
-router.put(
+router.patch(
   "/:id/pay",
   protect,
   validateRequest(paymentResultSchema),
   asyncHandler(updateOrderToPaid)
 );
-router.put(
+router.patch(
   "/:id/deliver",
   protect,
   admin,
