@@ -32,10 +32,12 @@ const ProductsListScreen = () => {
         <Col>
           <h1>Products</h1>
         </Col>
-        <Col>
-          <Button onClick={onCreateProduct}>
-            <FaEdit /> New Product
-          </Button>
+        <Col className="d-flex justify-content-end">
+          <div>
+            <Button onClick={onCreateProduct}>
+              <FaEdit /> New Product
+            </Button>
+          </div>
         </Col>
       </Row>
       {creatingProduct && <LoaderComponent />}
@@ -62,7 +64,7 @@ const ProductsListScreen = () => {
                   <tr key={product._id}>
                     <td>{product._id}</td>
                     <td>{product.name}</td>
-                    <td>{product.price}</td>
+                    <td>${product.price}</td>
                     <td>{product.category}</td>
                     <td>{product.brand}</td>
                     <td>

@@ -16,3 +16,13 @@ export interface Product {
 export interface CartProduct extends Product {
   quantity: number;
 }
+
+export interface ProductInput {
+  name: string;
+  image: string;
+  description: string;
+  brand: string;
+  category: string;
+  price: number;
+  countInStock: number;
+}

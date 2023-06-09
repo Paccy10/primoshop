@@ -4,6 +4,7 @@ import {
   createProduct,
   getProductById,
   getProducts,
+  updateProduct,
 } from "../controllers/product.controller";
 import { admin, protect } from "../middlewares/auth";
 
@@ -12,5 +13,6 @@ const router = express.Router();
 router.get("/", asyncHandler(getProducts));
 router.post("/", protect, admin, asyncHandler(createProduct));
 router.get("/:id", asyncHandler(getProductById));
+router.put("/:id", protect, admin, asyncHandler(updateProduct));
 
 export default router;
