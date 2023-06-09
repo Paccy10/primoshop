@@ -3,11 +3,28 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import MessageComponent from "../../components/Message.component";
 import LoaderComponent from "../../components/Loader.component";
-import { useGetProductsQuery } from "../../store/slices/productsApiSlice";
+import {
+  useGetProductsQuery,
+  useCreateProductMutation,
+} from "../../store/slices/productsApiSlice";
 import { getError } from "../../helpers/utils";
+import { toast } from "react-toastify";
 
 const ProductsListScreen = () => {
-  const { data: products, isLoading, error } = useGetProductsQuery();
+  const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+  const [createProduct, { isLoading: creatingProduct }] =
+    useCreateProductMutation();
+
+  const onCreateProduct = async () => {
+    if (window.confirm("Are you sure you want to create a new product")) {
+      try {
+        await createProduct();
+        refetch();
+      } catch (error: any) {
+        toast.error(error.data?.message || error.error);
+      }
+    }
+  };
 
   return (
     <>
@@ -16,11 +33,12 @@ const ProductsListScreen = () => {
           <h1>Products</h1>
         </Col>
         <Col>
-          <Button>
+          <Button onClick={onCreateProduct}>
             <FaEdit /> New Product
           </Button>
         </Col>
       </Row>
+      {creatingProduct && <LoaderComponent />}
       {isLoading ? (
         <LoaderComponent />
       ) : error ? (
