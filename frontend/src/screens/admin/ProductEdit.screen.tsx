@@ -1,19 +1,20 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import MessageComponent from "../../components/Message.component";
 import LoaderComponent from "../../components/Loader.component";
 import { toast } from "react-toastify";
 import {
   useGetSingleProductQuery,
   useUpdateProductMutation,
+  useUploadProductImageMutation,
 } from "../../store/slices/productsApiSlice";
 import * as Yup from "yup";
 import { FaArrowLeft } from "react-icons/fa";
 import FormContainerComponent from "../../components/Forms/FormContainer.component";
 import { getError } from "../../helpers/utils";
-import FormComponent from "../../components/Forms/Form.component";
 import { ProductInput } from "../../interfaces/product.interface";
 import FormFieldComponent from "../../components/Forms/FormField.component";
+import { Formik, Form as FormikForm } from "formik";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required().label("Name"),
@@ -38,6 +39,8 @@ const ProductEditScreen = () => {
   } = useGetSingleProductQuery(`${productId}`);
   const [updateProduct, { isLoading: editingProduct }] =
     useUpdateProductMutation();
+  const [uploadProductImage, { isLoading: uploadingImage }] =
+    useUploadProductImageMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (data: ProductInput) => {
@@ -45,6 +48,19 @@ const ProductEditScreen = () => {
       await updateProduct({ data, productId: `${productId}` }).unwrap();
       toast.success("Product updated successfully");
       navigate("/admin/products");
+    } catch (error: any) {
+      toast.error(error.data?.message || error.error);
+    }
+  };
+
+  const onUploadFile = async (file: any, setFieldValue: any) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      toast.success(res.message);
+      setFieldValue("image", res.image);
     } catch (error: any) {
       toast.error(error.data?.message || error.error);
     }
@@ -66,7 +82,7 @@ const ProductEditScreen = () => {
           </MessageComponent>
         ) : (
           <>
-            <FormComponent
+            <Formik
               initialValues={{
                 name: product?.name || "",
                 price: product?.price || 0,
@@ -79,47 +95,64 @@ const ProductEditScreen = () => {
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
-              <FormFieldComponent
-                name="name"
-                label="Name"
-                placeholder="Enter name"
-              />
-              <FormFieldComponent
-                name="price"
-                type="number"
-                label="Price"
-                placeholder="Enter price"
-              />
-              <FormFieldComponent
-                name="brand"
-                label="Brand"
-                placeholder="Enter brand"
-              />
-              <FormFieldComponent
-                name="category"
-                label="Category"
-                placeholder="Enter category"
-              />
-              <FormFieldComponent
-                type="number"
-                name="countInStock"
-                label="Count In Stock"
-                placeholder="Enter count in stock"
-              />
-              <FormFieldComponent
-                name="description"
-                label="Description"
-                placeholder="Enter description"
-              />
-              <Button
-                type="submit"
-                variant="primary"
-                className="mt-2"
-                disabled={editingProduct}
-              >
-                Update
-              </Button>
-            </FormComponent>
+              {({ setFieldValue }) => (
+                <FormikForm>
+                  <FormFieldComponent
+                    name="name"
+                    label="Name"
+                    placeholder="Enter name"
+                  />
+                  <FormFieldComponent
+                    name="price"
+                    type="number"
+                    label="Price"
+                    placeholder="Enter price"
+                  />
+                  <FormFieldComponent
+                    name="image"
+                    label="Image"
+                    placeholder="Enter image url"
+                  />
+                  <Form.Group>
+                    <Form.Control
+                      type="file"
+                      onChange={(e: any) =>
+                        onUploadFile(e.target.files[0], setFieldValue)
+                      }
+                    />
+                  </Form.Group>
+                  <FormFieldComponent
+                    name="brand"
+                    label="Brand"
+                    placeholder="Enter brand"
+                  />
+                  <FormFieldComponent
+                    name="category"
+                    label="Category"
+                    placeholder="Enter category"
+                  />
+                  <FormFieldComponent
+                    type="number"
+                    name="countInStock"
+                    label="Count In Stock"
+                    placeholder="Enter count in stock"
+                  />
+                  <FormFieldComponent
+                    name="description"
+                    label="Description"
+                    placeholder="Enter description"
+                  />
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="mt-2"
+                    disabled={editingProduct}
+                  >
+                    Update
+                  </Button>
+                </FormikForm>
+              )}
+            </Formik>
           </>
         )}
       </FormContainerComponent>

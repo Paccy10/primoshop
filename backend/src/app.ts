@@ -1,3 +1,4 @@
+import path from "path";
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
@@ -6,6 +7,7 @@ import { connectDB } from "./config/db";
 import productRoutes from "./routes/product.routes";
 import userRoutes from "./routes/user.routes";
 import orderRoutes from "./routes/order.routes";
+import uploadRoutes from "./routes/upload.routes";
 import Logger from "./library/logger";
 import { errorHandler, notFound } from "./middlewares/errorHandler";
 
@@ -23,6 +25,8 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "../../uploads/")));
 
 app.use(notFound);
 app.use(errorHandler);
