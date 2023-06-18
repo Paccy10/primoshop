@@ -9,6 +9,14 @@ export interface Product {
   countInStock: number;
   rating: number;
   numReviews: number;
+  reviews: {
+    _id: string;
+    name: string;
+    rating: number;
+    comment: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,4 +33,9 @@ export interface ProductInput {
   category: string;
   price: number;
   countInStock: number;
+}
+
+export interface ReviewInput {
+  rating: number;
+  comment: string;
 }

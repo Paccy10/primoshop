@@ -1,5 +1,8 @@
 import { Schema, model } from "mongoose";
-import { ProductDocument } from "../interfaces/product.interface";
+import {
+  ProductDocument,
+  ReviewDocument,
+} from "../interfaces/product.interface";
 
 const reviewSchema = new Schema(
   {
@@ -78,4 +81,5 @@ const productSchema = new Schema(
   }
 );
 
+export const Review = model<ReviewDocument>("Review", reviewSchema);
 export default model<ProductDocument>("Product", productSchema);

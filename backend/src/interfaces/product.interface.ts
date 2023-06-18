@@ -43,3 +43,8 @@ export interface ProductDocument extends ProductInput, Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ReviewInput {
+  rating: number;
+  comment: string;
+}
