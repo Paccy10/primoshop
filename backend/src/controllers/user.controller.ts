@@ -78,17 +78,53 @@ export const updateUserProfile = async (req: CustomRequest, res: Response) => {
 
 // Admin routes
 export const getUsers = async (req: Request, res: Response) => {
-  res.send("get all users");
+  const users = await User.find({});
+  const updatedUsers = users.map((user) => getUserData(user));
+  res.status(200).json(updatedUsers);
 };
 
 export const getUserById = async (req: Request, res: Response) => {
-  res.send("get user by id");
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  return res.status(200).json(getUserData(user));
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  res.send("delete user");
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  if (user.isAdmin) {
+    res.status(400);
+    throw new Error("Can not delete admin user");
+  }
+
+  await User.deleteOne({ _id: user._id });
+  res.status(200).json({ message: "User deleted successfully" });
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  res.send("update user");
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  const { name, email, isAdmin } = req.body as UserInput;
+  user.name = name || user.name;
+  user.email = email || user.email;
+  user.isAdmin =
+    isAdmin !== null && isAdmin !== undefined ? isAdmin : user.isAdmin;
+
+  const updatedUser = await user.save();
+  return res.status(200).json(getUserData(updatedUser));
 };
