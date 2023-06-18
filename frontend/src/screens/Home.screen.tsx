@@ -4,9 +4,17 @@ import { useGetProductsQuery } from "../store/slices/productsApiSlice";
 import { getError } from "../helpers/utils";
 import LoaderComponent from "../components/Loader.component";
 import MessageComponent from "../components/Message.component";
+import Paginator from "../components/Paginator";
+import { useParams } from "react-router-dom";
 
 const HomeScreen = () => {
-  const { data: products, isLoading, isError, error } = useGetProductsQuery();
+  const params = useParams();
+  const page = params.page ? Number(params.page) : 1;
+  const { data, isLoading, isError, error } = useGetProductsQuery({
+    page,
+    pageSize: 20,
+  });
+  const products = data ? data.products : [];
 
   return (
     <>
@@ -24,6 +32,7 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
+          <Paginator pages={data?.pages || 0} page={page} />
         </>
       )}
     </>

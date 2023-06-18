@@ -10,9 +10,17 @@ import {
 } from "../../store/slices/productsApiSlice";
 import { getError } from "../../helpers/utils";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import Paginator from "../../components/Paginator";
 
 const ProductsListScreen = () => {
-  const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+  const params = useParams();
+  const page = params.page ? Number(params.page) : 1;
+  const { data, isLoading, error, refetch } = useGetProductsQuery({
+    page,
+    pageSize: 20,
+  });
+  const products = data ? data.products : [];
   const [createProduct, { isLoading: creatingProduct }] =
     useCreateProductMutation();
   const [deleteProduct, { isLoading: deletingProduct }] =
@@ -101,6 +109,7 @@ const ProductsListScreen = () => {
                 ))}
             </tbody>
           </Table>
+          <Paginator pages={data?.pages || 0} page={page} isAdmin />
         </>
       )}
     </>
