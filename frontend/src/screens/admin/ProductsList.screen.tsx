@@ -6,6 +6,7 @@ import LoaderComponent from "../../components/Loader.component";
 import {
   useGetProductsQuery,
   useCreateProductMutation,
+  useDeleteProductMutation,
 } from "../../store/slices/productsApiSlice";
 import { getError } from "../../helpers/utils";
 import { toast } from "react-toastify";
@@ -14,12 +15,26 @@ const ProductsListScreen = () => {
   const { data: products, isLoading, error, refetch } = useGetProductsQuery();
   const [createProduct, { isLoading: creatingProduct }] =
     useCreateProductMutation();
+  const [deleteProduct, { isLoading: deletingProduct }] =
+    useDeleteProductMutation();
 
   const onCreateProduct = async () => {
     if (window.confirm("Are you sure you want to create a new product")) {
       try {
         await createProduct();
         refetch();
+      } catch (error: any) {
+        toast.error(error.data?.message || error.error);
+      }
+    }
+  };
+
+  const onDeleteProduct = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        const res = await deleteProduct(id).unwrap();
+        refetch();
+        toast.success(res.message);
       } catch (error: any) {
         toast.error(error.data?.message || error.error);
       }
@@ -41,6 +56,7 @@ const ProductsListScreen = () => {
         </Col>
       </Row>
       {creatingProduct && <LoaderComponent />}
+      {deletingProduct && <LoaderComponent />}
       {isLoading ? (
         <LoaderComponent />
       ) : error ? (
@@ -73,7 +89,11 @@ const ProductsListScreen = () => {
                           <FaEdit />
                         </Button>
                       </LinkContainer>
-                      <Button variant="danger" className="btn-sm mx-2">
+                      <Button
+                        variant="danger"
+                        className="btn-sm mx-2"
+                        onClick={() => onDeleteProduct(product._id)}
+                      >
                         <FaTrash style={{ color: "white" }} />
                       </Button>
                     </td>
