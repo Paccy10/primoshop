@@ -4,15 +4,18 @@ import { useGetProductsQuery } from "../store/slices/productsApiSlice";
 import { getError } from "../helpers/utils";
 import LoaderComponent from "../components/Loader.component";
 import MessageComponent from "../components/Message.component";
-import Paginator from "../components/Paginator";
-import { useParams } from "react-router-dom";
+import Paginator from "../components/Paginator.component";
+import { Link, useParams } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const HomeScreen = () => {
   const params = useParams();
   const page = params.page ? Number(params.page) : 1;
+  const keyword = params.keyword;
   const { data, isLoading, isError, error } = useGetProductsQuery({
     page,
     pageSize: 20,
+    keyword: keyword || "",
   });
   const products = data ? data.products : [];
 
@@ -24,6 +27,14 @@ const HomeScreen = () => {
         <MessageComponent variant="danger">{getError(error)}</MessageComponent>
       ) : (
         <>
+          {keyword && (
+            <Link to="/" className="btn btn-light mb-4">
+              <div className="d-flex align-items-center">
+                <FaArrowLeft />
+                <span className="ms-2">Go Back</span>
+              </div>
+            </Link>
+          )}
           <h1>Latest Products</h1>
           <Row>
             {products?.map((product) => (
@@ -32,7 +43,7 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
-          <Paginator pages={data?.pages || 0} page={page} />
+          <Paginator pages={data?.pages || 0} page={page} keyword={keyword} />
         </>
       )}
     </>

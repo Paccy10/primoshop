@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../store/slices/usersApiSlice";
 import { logout } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
+import SearchBoxComponent from "./SearchBox.component";
 
 const HeaderComponent = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +40,7 @@ const HeaderComponent = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
+              <SearchBoxComponent />
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <div className="d-inline-flex align-items-center">

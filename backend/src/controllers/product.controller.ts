@@ -6,8 +6,12 @@ import { ProductInput, ReviewInput } from "../interfaces/product.interface";
 export const getProducts = async (req: Request, res: Response) => {
   const pageSize = Number(req.query.pageSize) || 20;
   const page = Number(req.query.page) || 1;
-  const count = await Product.countDocuments();
-  const products = await Product.find({})
+  const keyword = req.query.keyword
+    ? { name: { $regex: req.query.keyword, $options: "i" } }
+    : {};
+  const count = await Product.countDocuments({ ...keyword });
+
+  const products = await Product.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
   res.status(200).json({ products, page, pages: Math.ceil(count / pageSize) });

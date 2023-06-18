@@ -11,7 +11,7 @@ import {
 import { getError } from "../../helpers/utils";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
-import Paginator from "../../components/Paginator";
+import Paginator from "../../components/Paginator.component";
 
 const ProductsListScreen = () => {
   const params = useParams();
@@ -19,6 +19,7 @@ const ProductsListScreen = () => {
   const { data, isLoading, error, refetch } = useGetProductsQuery({
     page,
     pageSize: 20,
+    keyword: params.keyword || "",
   });
   const products = data ? data.products : [];
   const [createProduct, { isLoading: creatingProduct }] =
