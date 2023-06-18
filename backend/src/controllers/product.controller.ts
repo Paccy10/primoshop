@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import Product from "../models/product.model";
+import Product, { Review } from "../models/product.model";
 import { CustomRequest } from "../interfaces/request.interface";
-import { ProductInput } from "../interfaces/product.interface";
+import { ProductInput, ReviewInput } from "../interfaces/product.interface";
 
 export const getProducts = async (req: Request, res: Response) => {
   const products = await Product.find({});
@@ -72,4 +72,43 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
   await Product.deleteOne({ _id: product._id });
   res.status(200).json({ message: "Product deleted successfully" });
+};
+
+export const createProductReview = async (
+  req: CustomRequest,
+  res: Response
+) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    const message = "Product not found";
+    res.status(404).json({ message });
+    throw new Error(message);
+  }
+
+  const { rating, comment } = req.body as ReviewInput;
+
+  const hasReviewed = product.reviews.find(
+    (review) => review.user.toString() === req.user?._id.toString()
+  );
+
+  if (hasReviewed) {
+    const message = "Product already reviewed";
+    res.status(404).json({ message });
+    throw new Error(message);
+  }
+
+  const review = new Review({
+    name: req.user?.name,
+    rating,
+    comment,
+    user: req.user?._id,
+  });
+  product.reviews.push(review);
+  product.numReviews = product.reviews.length;
+  product.rating =
+    product.reviews.reduce((acc, review) => acc + review.rating, 0) /
+    product.reviews.length;
+  await product.save();
+  res.status(200).json({ message: "Review added successfully" });
 };

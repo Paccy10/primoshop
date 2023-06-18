@@ -10,14 +10,25 @@ import {
   Form,
 } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
-import noProduct from "../assets/images/no_product.svg";
 import RatingComponent from "../components/Rating.component";
-import { useGetSingleProductQuery } from "../store/slices/productsApiSlice";
+import {
+  useGetSingleProductQuery,
+  useCreateProductReviewMutation,
+} from "../store/slices/productsApiSlice";
 import { getError } from "../helpers/utils";
 import LoaderComponent from "../components/Loader.component";
 import MessageComponent from "../components/Message.component";
 import { addToCart } from "../store/slices/cartSlice";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
+import { ReviewInput } from "../interfaces/product.interface";
+import { format } from "date-fns";
+import { Formik, Form as FormikForm } from "formik";
+
+const validationSchema = Yup.object().shape({
+  rating: Yup.number().positive().required().min(0).max(5).label("Rating"),
+});
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -26,14 +37,32 @@ const ProductScreen = () => {
     isLoading,
     isError,
     error,
+    refetch,
   } = useGetSingleProductQuery(`${productId}`);
+  const [createProductReview, { isLoading: creatingReview }] =
+    useCreateProductReviewMutation();
   const [quantity, setQuantity] = useState(1);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { userInfo } = useAppSelector((state) => state.auth);
 
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, quantity }));
     navigate("/cart");
+  };
+
+  const onCreateReview = async (data: ReviewInput, helpers: any) => {
+    try {
+      const res = await createProductReview({
+        data,
+        productId: `${productId}`,
+      }).unwrap();
+      refetch();
+      helpers.resetForm();
+      toast.success(res.message);
+    } catch (error: any) {
+      toast.error(error.data?.message || error.error);
+    }
   };
 
   return (
@@ -53,7 +82,7 @@ const ProductScreen = () => {
             </Link>
             <Row>
               <Col md={5}>
-                <Image src={noProduct} alt={product.name} fluid />
+                <Image src={product.image} alt={product.name} fluid />
               </Col>
               <Col md={4}>
                 <ListGroup variant="flush">
@@ -131,6 +160,85 @@ const ProductScreen = () => {
                     </ListGroup.Item>
                   </ListGroup>
                 </Card>
+              </Col>
+            </Row>
+            <Row className="review">
+              <Col md={6}>
+                <h2>Reviews</h2>
+                {product.reviews.length === 0 && (
+                  <MessageComponent>No Reviews</MessageComponent>
+                )}
+                <ListGroup variant="flush">
+                  {product.reviews.map((review) => (
+                    <ListGroup.Item key={review._id}>
+                      <strong>{review.name}</strong>
+                      <RatingComponent value={review.rating} />
+                      <p>
+                        {format(new Date(review.createdAt), "dd-MMMM-yyyy")}
+                      </p>
+                      <p>{review.comment}</p>
+                    </ListGroup.Item>
+                  ))}
+                  <ListGroup.Item>
+                    <h2>Add a Review</h2>
+                    {creatingReview && <LoaderComponent />}
+                    {userInfo ? (
+                      <Formik
+                        initialValues={{ rating: 0, comment: "" }}
+                        validationSchema={validationSchema}
+                        onSubmit={onCreateReview}
+                      >
+                        {({ values, setFieldValue }) => (
+                          <FormikForm>
+                            <Form.Group className="my-2">
+                              <Form.Label>Rating</Form.Label>
+                              <Form.Control
+                                as="select"
+                                value={values.rating}
+                                onChange={(e) =>
+                                  setFieldValue(
+                                    "rating",
+                                    Number(e.target.value)
+                                  )
+                                }
+                              >
+                                <option value="">Select rating...</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="2">2 - Fair</option>
+                                <option value="3">3 - Good</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="5">5 - Excellent</option>
+                              </Form.Control>
+                            </Form.Group>
+                            <Form.Group className="my-2">
+                              <Form.Label>Comment</Form.Label>
+                              <Form.Control
+                                as="textarea"
+                                value={values.comment}
+                                onChange={(e) =>
+                                  setFieldValue("comment", e.target.value)
+                                }
+                              />
+                            </Form.Group>
+                            <Button
+                              type="submit"
+                              variant="primary"
+                              className="mt-2"
+                              disabled={creatingReview}
+                            >
+                              Submit
+                            </Button>
+                          </FormikForm>
+                        )}
+                      </Formik>
+                    ) : (
+                      <MessageComponent>
+                        Please <Link to="/login">sign in</Link> to write a
+                        review
+                      </MessageComponent>
+                    )}
+                  </ListGroup.Item>
+                </ListGroup>
               </Col>
             </Row>
           </>
