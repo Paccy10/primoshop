@@ -7,6 +7,7 @@ import MessageComponent from "../components/Message.component";
 import Paginator from "../components/Paginator.component";
 import { Link, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import ProductsCarouselComponent from "../components/ProductsCarousel.component";
 
 const HomeScreen = () => {
   const params = useParams();
@@ -27,13 +28,15 @@ const HomeScreen = () => {
         <MessageComponent variant="danger">{getError(error)}</MessageComponent>
       ) : (
         <>
-          {keyword && (
+          {keyword ? (
             <Link to="/" className="btn btn-light mb-4">
               <div className="d-flex align-items-center">
                 <FaArrowLeft />
                 <span className="ms-2">Go Back</span>
               </div>
             </Link>
+          ) : (
+            <ProductsCarouselComponent />
           )}
           <h1>Latest Products</h1>
           <Row>
