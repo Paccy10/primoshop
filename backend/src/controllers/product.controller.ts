@@ -121,3 +121,8 @@ export const createProductReview = async (
   await product.save();
   res.status(200).json({ message: "Review added successfully" });
 };
+
+export const getTopProducts = async (req: Request, res: Response) => {
+  const products = await Product.find().sort({ rating: -1 }).limit(3);
+  res.status(200).json(products);
+};
