@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { HelmetProvider } from "react-helmet-async";
 
 import "./assets/styles/bootstrap.custom.css";
 import "./assets/styles/index.css";
@@ -76,7 +77,9 @@ root.render(
       deferLoading={true}
       options={{ "client-id": `${process.env.REACT_APP_PAYPAL_CLIENT_ID}` }}
     >
-      <RouterProvider router={router} />
+      <HelmetProvider>
+        <RouterProvider router={router} />
+      </HelmetProvider>
     </PayPalScriptProvider>
   </Provider>
 );

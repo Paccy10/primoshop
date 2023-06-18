@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import { ReviewInput } from "../interfaces/product.interface";
 import { format } from "date-fns";
 import { Formik, Form as FormikForm } from "formik";
+import MetaComponent from "../components/Meta.component";
 
 const validationSchema = Yup.object().shape({
   rating: Yup.number().positive().required().min(0).max(5).label("Rating"),
@@ -74,6 +75,10 @@ const ProductScreen = () => {
       ) : (
         product && (
           <>
+            <MetaComponent
+              title={product.name}
+              description={product.description}
+            />
             <Link to="/" className="btn btn-light my-3">
               <div className="d-flex align-items-center">
                 <FaArrowLeft />

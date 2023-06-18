@@ -39,7 +39,8 @@ const ProductEditScreen = () => {
   } = useGetSingleProductQuery(`${productId}`);
   const [updateProduct, { isLoading: editingProduct }] =
     useUpdateProductMutation();
-  const [uploadProductImage] = useUploadProductImageMutation();
+  const [uploadProductImage, { isLoading: uploadingImage }] =
+    useUploadProductImageMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (data: ProductInput) => {
@@ -120,6 +121,7 @@ const ProductEditScreen = () => {
                       }
                     />
                   </Form.Group>
+                  {uploadingImage && <LoaderComponent />}
                   <FormFieldComponent
                     name="brand"
                     label="Brand"
