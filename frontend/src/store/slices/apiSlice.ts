@@ -5,6 +5,6 @@ const baseQuery = fetchBaseQuery({ baseUrl: API_BASE_URL });
 
 export const apiSlice = createApi({
   baseQuery,
-  tagTypes: ["Product", "Order", "user"],
+  tagTypes: ["Product", "Order", "User"],
   endpoints: () => ({}),
 });

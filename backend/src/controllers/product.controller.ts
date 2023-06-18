@@ -71,5 +71,5 @@ export const deleteProduct = async (req: Request, res: Response) => {
   }
 
   await Product.deleteOne({ _id: product._id });
-  res.status(200).json({ message: "Product deleted" });
+  res.status(200).json({ message: "Product deleted successfully" });
 };

@@ -1,4 +1,5 @@
 export interface UserInfo {
+  _id: string;
   name: string;
   email: string;
   isAdmin: boolean;
@@ -19,4 +20,5 @@ export interface UpdateProfileData {
   name: string;
   email: string;
   password?: string;
+  isAdmin?: boolean;
 }
