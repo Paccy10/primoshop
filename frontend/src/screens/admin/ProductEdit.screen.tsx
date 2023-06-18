@@ -39,8 +39,7 @@ const ProductEditScreen = () => {
   } = useGetSingleProductQuery(`${productId}`);
   const [updateProduct, { isLoading: editingProduct }] =
     useUpdateProductMutation();
-  const [uploadProductImage, { isLoading: uploadingImage }] =
-    useUploadProductImageMutation();
+  const [uploadProductImage] = useUploadProductImageMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (data: ProductInput) => {

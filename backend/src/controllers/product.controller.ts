@@ -60,3 +60,16 @@ export const updateProduct = async (req: Request, res: Response) => {
   const updatedProduct = await product.save();
   res.status(200).json(updatedProduct);
 };
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    const message = "Product not found";
+    res.status(404).json({ message });
+    throw new Error(message);
+  }
+
+  await Product.deleteOne({ _id: product._id });
+  res.status(200).json({ message: "Product deleted" });
+};
